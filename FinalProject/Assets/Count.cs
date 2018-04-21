@@ -9,13 +9,13 @@ public class Count : MonoBehaviour {
 	public AudioSource GetR;
 	public AudioSource Go;
 	public GameObject Timer;
-	public GameObject Controls;
+	public CarCtrl Controls;
 	// Use this for initialization
 	void Start () {
 		StartCoroutine (CountStart ());	
 	}
 	IEnumerator CountStart(){
-		Controls.SetActive (false);
+        Controls.disableControls();
 		Timer.SetActive (false);
 		yield return new WaitForSeconds (0.5f);
 		CountD.GetComponent<Text> ().text = "3";
@@ -35,7 +35,7 @@ public class Count : MonoBehaviour {
 		CountD.SetActive (false);
 		Go.Play ();
 		Timer.SetActive (true);
-		Controls.SetActive (true);
+        Controls.enableControls();
 	}
 	// Update is called once per frame
 	void Update () {

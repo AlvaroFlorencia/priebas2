@@ -7,66 +7,71 @@ using UnityEngine.UI;
 public class checkan : MonoBehaviour {
 	public Text texto;
 	public Text answer;
-	public Text score;
 	//int score1;
-	string questions="¿2+2?,4,¿3+3?,6,¿4+4?,8";
-	string[] array;
-	int aleatorio;
+    string[] questions = { "¿2+2?", "¿3+3?", "¿4+4?" };
+    string[] answers = { "4", "6", "8" };
+    int aleatorio;
 	public GameObject Controls;
 	public GameObject q;
-	public GameObject a;
+	public InputField a;
 	public GameObject panel;
 	public GameObject particle1;
-	//public GameObject car;
-	//score points;
-	//public int plus=1;
+	public GameObject car;
+    public CarCtrl carCtrl;
+    public bool isOnQuestion = true;
+	public score score;
+	public int plus=1;
 
 	// Use this for initialization
 	void Start () {
-		
-	}
+        aleatorio = Random.Range(0, questions.Length - 1);
+        texto.text = questions[aleatorio];
+        carCtrl = FindObjectOfType<CarCtrl>();
+    }
 	
 	// Update is called once per frame
 	void Update () {
-		if(array[aleatorio+1]==answer.text){
-			
-			print("correcto");
-			Controls.SetActive (true);
-			q.SetActive (false);
-			a.SetActive (false);
-			panel.SetActive (false);
-			particle1.SetActive (false);
-		}else{
-			print("incorrecto");
-		}
-	}
-	void OnTriggerEnter () {
-		//car.GetComponent<CarCtrl>().subirScore();
-		print("tocandome");
-		Controls.SetActive (false);
-	
-		q.SetActive (true);
-		a.SetActive (true);
-		panel.SetActive (true);
-	
+        if (answers[aleatorio] == answer.text)
+        {
+            InputField field = a;
+            field.text = "";
+            if (carCtrl)
+            {
+                print("Correcto");
+                score.gainPoints();
+                Controls.SetActive(true);
+                q.SetActive(false);
+                a.gameObject.SetActive(false);
+                panel.SetActive(false);
+                carCtrl.enableControls();
+                particle1.SetActive(false);
+            }
+            else
+            {
+                score.gainPoints();
+                carCtrl = FindObjectOfType<CarCtrl>();
+                Controls.SetActive(true);
+                q.SetActive(false);
+                a.gameObject.SetActive(false);
+                panel.SetActive(false);
+                carCtrl.enableControls();
+                particle1.SetActive(false);
+                
+            }
+        }
 
-	array = questions.Split (',');
-	 aleatorio = Random.Range(0,array.Length-1);
-		if (aleatorio % 2 == 0) {
-		} else {
-			if (aleatorio == array.Length) {
-				aleatorio--;
-			} else {
-				aleatorio++;
-			}
-		}
-
-
-		texto.text = array [aleatorio];
-		print (aleatorio);
-		print(array [aleatorio]);
-		print(array [aleatorio+1]);
-
-	}
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Player")
+        {
+            carCtrl.disableControls();
+            Controls.SetActive(false);
+            q.SetActive(true);
+            a.gameObject.SetActive(true);
+            panel.SetActive(true);          
+        }
+       
+    }
 
 }
